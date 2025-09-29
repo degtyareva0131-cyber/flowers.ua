@@ -1,0 +1,165 @@
+<!-- Сайт розроблено студентом Дегтярьовою Іриною, група ФЕМП 5-3з -->
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Замовлення квітів — Дегтярьова Ірина</title>
+<style>
+:root{--accent:#c84b7a;--bg:#f8f6f9;--card:#fff;--muted:#6b6b6b;--radius:12px;font-family:Inter,system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#222}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;background:linear-gradient(90deg,#fff,#fff6fb);border-bottom:1px solid rgba(0,0,0,0.06)}
+header .brand{display:flex;gap:12px;align-items:center}
+header .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ff8fb2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+nav{display:flex;gap:12px}
+nav a{padding:10px 14px;text-decoration:none;color:inherit;border-radius:8px;font-weight:600}
+nav a.active{background:rgba(200,75,122,0.08)}
+main{max-width:1100px;margin:18px auto;padding:28px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+.card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:0 6px 18px rgba(22,22,22,0.04);display:flex;flex-direction:column;gap:10px}
+.card img{width:100%;height:150px;object-fit:cover;border-radius:10px}
+.card h4{margin:0;font-size:16px}
+.card .price{font-weight:700}
+.btn{display:inline-block;padding:8px 12px;border-radius:10px;background:var(--accent);color:#fff;border:none;cursor:pointer;font-weight:700}
+.btn.secondary{background:transparent;color:var(--accent);border:2px solid rgba(200,75,122,0.12)}
+.cart{background:var(--card);padding:14px;border-radius:12px;position:sticky;top:20px}
+.cart-list{display:flex;flex-direction:column;gap:8px;max-height:380px;overflow:auto}
+.cart-item{display:flex;gap:8px;align-items:center}
+.cart-item img{width:48px;height:48px;border-radius:8px;object-fit:cover}
+.cart-item .name{font-weight:600}
+.total{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px dashed rgba(0,0,0,0.06);margin-top:10px}
+.tabs{display:flex;gap:8px;margin-bottom:18px}
+.tab{padding:8px 12px;border-radius:10px;cursor:pointer;background:transparent}
+.tab.active{background:rgba(200,75,122,0.08);font-weight:700}
+footer{padding:18px 24px;border-top:1px solid rgba(0,0,0,0.06);display:flex;justify-content:space-between;background:#fff}
+.muted{color:var(--muted)}
+@media(max-width:880px){.grid{grid-template-columns:1fr}.cart{position:relative}header{flex-direction:column;align-items:flex-start;gap:12px}nav{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">
+<div class="logo">Ф</div>
+<div><div style="font-weight:800">Сервіс замовлення квітів</div><div class="muted" style="font-size:13px">ФЕМП — Управління бізнесом</div></div>
+</div>
+<nav id="main-nav">
+<a href="#home" class="navlink active" data-section="home">Головна</a>
+<a href="#gallery" class="navlink" data-section="gallery">Галерея</a>
+<a href="#about" class="navlink" data-section="about">Про автора</a>
+<a href="#contacts" class="navlink" data-section="contacts">Контакти</a>
+</nav>
+</header>
+<main>
+<section id="home">
+<h1>Ласкаво просимо</h1>
+<p>Сайт для замовлення квітів та подарунків. Вибирайте товари, використовуйте пошук і фільтр, кошик зберігається після перезавантаження.</p>
+<div class="tabs">
+<div class="tab active" data-section="gallery">Перейти в Галерею</div>
+<div class="tab" data-section="about">Про автора</div>
+<div class="tab" data-section="contacts">Контакти</div>
+</div>
+</section>
+<section id="gallery" style="display:none">
+<h2>Галерея товарів</h2>
+<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<input type="text" id="search-input" placeholder="Пошук за назвою" style="padding:6px 10px;border-radius:8px;border:1px solid #ccc;flex:1">
+<select id="price-filter" style="padding:6px 10px;border-radius:8px;border:1px solid #ccc">
+<option value="all">Всі ціни</option>
+<option value="0-499">До 499 грн</option>
+<option value="500-799">500–799 грн</option>
+<option value="800-999">800 грн і більше</option>
+</select>
+</div>
+<div style="display:flex;gap:20px;align-items:flex-start">
+<div style="flex:1">
+<div class="gallery" id="product-grid"></div>
+</div>
+<aside style="width:320px">
+<div class="cart" id="cart">
+<h3>Ваш вибір</h3>
+<div class="cart-list" id="cart-list"><div class="muted">Кошик порожній</div></div>
+<div class="total"><div>Загалом:</div><div id="total-sum">0 грн</div></div>
+<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn" onclick="checkout()">Оформити</button>
+<button class="btn secondary" onclick="resetSelection()">Очистити кошик</button>
+</div>
+</div>
+</aside>
+</div>
+</section>
+<section id="about" style="display:none">
+<h2>Про автора</h2>
+<p>Студентка: <strong>Дегтярьова Ірина</strong></p>
+<p>Група: <strong>ФЕМП 5-3з</strong></p>
+<p>Факультет: <strong>Управління бізнесом</strong></p>
+<p class="muted">Демонстраційний сайт, всі операції виконуються на стороні клієнта.</p>
+</section>
+<section id="contacts" style="display:none">
+<h2>Контакти</h2>
+<p>Електронна пошта (демо): <em>student@example.com</em></p>
+</section>
+</main>
+<footer>
+<div>
+<div style="font-weight:700">Дегтярьова Ірина</div>
+<div class="muted">Група: ФЕМП-5-3з</div>
+</div>
+<div class="muted">Сайт для замовлення квітів — HTML, CSS, JavaScript</div>
+</footer>
+<script>
+const products=[
+{id:1,title:'Рожева мрія',price:450,img:'https://images.unsplash.com/photo-1604147706282-6325ad46f18d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:2,title:'Червоні троянди 11',price:720,img:'https://images.unsplash.com/photo-1585845818674-7b441f6d8d9b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:3,title:'Соняшники',price:380,img:'https://images.unsplash.com/photo-1590080874253-d07e0de429b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:4,title:'Міні-подарунок',price:199,img:'https://images.unsplash.com/photo-1573865526739-95bbf8153c59?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:5,title:'Композиція в коробці',price:560,img:'https://images.unsplash.com/photo-1589654318195-0d88a9cf56e6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:6,title:'Ваза з трояндами',price:820,img:'https://images.unsplash.com/photo-1590080874089-2e4c2d8d4990?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:7,title:'Палітра кольорів',price:650,img:'https://images.unsplash.com/photo-1574669827381-53a0b56d79f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:8,title:'Романтичний букет',price:780,img:'https://images.unsplash.com/photo-1589710750865-0cc05e9c8ce0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:9,title:'Елегантна композиція',price:910,img:'https://images.unsplash.com/photo-1589654389362-9f47b3c1e4f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:10,title:'Яскраві тюльпани',price:430,img:'https://images.unsplash.com/photo-1610564556947-f1e6b99fc35b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:11,title:'Ніжний букет еустом',price:550,img:'https://images.unsplash.com/photo-1612197608111-2eab3f1e4e8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'},
+{id:12,title:'Святковий набір',price:600,img:'https://images.unsplash.com/photo-1587554802693-4c4c83f5f055?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400'}
+];
+let cart=JSON.parse(localStorage.getItem('cart'))||{};
+function renderProducts(){
+const grid=document.getElementById('product-grid');grid.innerHTML='';
+const search=document.getElementById('search-input').value.toLowerCase();
+const priceFilter=document.getElementById('price-filter').value;
+let filtered=products.filter(p=>p.title.toLowerCase().includes(search));
+if(priceFilter!=='all'){
+let [min,max]=priceFilter.split('-').map(Number);
+filtered=filtered.filter(p=>max?p.price>=min&&p.price<=max:p.price>=min);
+}
+filtered.forEach(p=>{
+let card=document.createElement('div');card.className='card';
+card.innerHTML=`<img src="${p.img}" alt="${p.title}"><h4>${p.title}</h4><div class="price">${p.price} грн</div><button class="btn" onclick="addToCart(${p.id})">Обрати</button>`;
+grid.appendChild(card);
+});
+}
+function addToCart(id){
+cart[id]=(cart[id]||0)+1;localStorage.setItem('cart',JSON.stringify(cart));renderCart();
+}
+function renderCart(){
+const list=document.getElementById('cart-list');list.innerHTML='';
+let total=0;for(let id in cart){let p=products.find(x=>x.id==id);total+=p.price*cart[id];
+let item=document.createElement('div');item.className='cart-item';
+item.innerHTML=`<img src="${p.img}" alt="${p.title}"><div class="name">${p.title} x ${cart[id]}</div><div>${p.price*cart[id]} грн</div>`;
+list.appendChild(item);}if(Object.keys(cart).length===0){list.innerHTML='<div class="muted">Кошик порожній</div>'}
+document.getElementById('total-sum').innerText=total+' грн';
+}
+function resetSelection(){cart={};localStorage.setItem('cart',JSON.stringify(cart));renderCart();}
+function checkout(){if(Object.keys(cart).length===0){alert('Кошик порожній');return;}let total=0;for(let id in cart){let p=products.find(x=>x.id==id);total+=p.price*cart[id];}alert('Замовлення оформлено!\nСума: '+total+' грн');cart={};localStorage.setItem('cart',JSON.stringify(cart));renderCart();}
+document.getElementById('search-input').addEventListener('input',renderProducts);
+document.getElementById('price-filter').addEventListener('change',renderProducts);
+renderProducts();
+// Навигация по разделам
+document.querySelectorAll('.navlink, .tab').forEach(el=>el.addEventListener('click',e=>{let sec=e.target.dataset.section;
+document.querySelectorAll('main section').forEach(s=>s.style.display='none');
+document.getElementById(sec).style.display='block';
+document.querySelectorAll('.navlink, .tab').forEach(n=>n.classList.remove('active'));
+e.target.classList.add('active');}));
+</script>
+</body>
+</html>
